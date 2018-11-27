@@ -26,23 +26,23 @@ const Note = require('../models/note');
 //   });
 
 
-  mongoose.connect(MONGODB_URI,{useNewUrlParser:true})
-    .then(() => {
-        let filter = {};
-        const id = "000000000000000000000004";
+//   mongoose.connect(MONGODB_URI,{useNewUrlParser:true})
+//     .then(() => {
+//         let filter = {};
+//         const id = "000000000000000000000004";
         
-        return Note.findById(id,item => console.log(item));
-    })
-    .then(results => {
-        console.log(results);
-    })
-    .then(() => {
-        return mongoose.disconnect()
-    })
-    .catch(err => {
-        console.error(`ERROR: ${err.message}`);
-        console.error(err);
-    });
+//         return Note.findById(id,item => console.log(item));
+//     })
+//     .then(results => {
+//         console.log(results);
+//     })
+//     .then(() => {
+//         return mongoose.disconnect()
+//     })
+//     .catch(err => {
+//         console.error(`ERROR: ${err.message}`);
+//         console.error(err);
+//     });
 
 // mongoose.connect(MONGODB_URI,{useNewUrlParser:true})
 //     .then(()=> {
