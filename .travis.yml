@@ -1,4 +1,11 @@
 language: node_js
 node_js: node
-services: 
-  - mongodb
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: QlhPfDkO6Mko6KsR0nwoHr0RV3/fD+FLqhlX2USYMU/4TWVm9jF1lCF1Z+H+B1sTPUyLRQfXc3i9IsnJHhR/jLYw12EaMsF8VVkxw0N8RNM5jPe6LhKHoMxV/5OLlSO3UzUTka5f31Qji8FbGvoFgCxT/Scil7xd4HKNIS5hLjGGLFlJhXXNd5sB/yyTk016hs/qDX3QajReizcguy0oTsy1of2MEUbWNd9XL3gU4QyG9b15a9hBTdSbdxPpXVmH7kRXh+yXKMPBirdF41E9nFO6sj9AlKwkRVKm1UNr9X2wh8ceVtO9frheS5V40LU0Tgi8FmkQuXFb2BOdiTnWkZVm3tvnnk71MMeZhVUMF0ZyUBh/1Elv3duTN7rMvShTdw1kNuZtAIBqOjPTXwne8WHtHlLIODBkxhyShI9Mj8o6YBqFFI2dbHtPhg8ozDPCy3W6vN1tLFN2HPJnkae7VShi2p2V8HE8Rue3SVHwSzpTDJdcLsyk+eCLtGEIYfRhGW3qWYVJV9y2TInuRFaR4xZsf7f08QoLak4+tMgl681+VZi0CfOD+A/WEgSq78hkRlkX02+rx8ziPOCyOeQDW36RsXqze7zGZIFZlKSyhUVD+L5FQ0IECkmkVZWIyNmiiaIuyMuxY2MlNwtwScG2r5EYC5Qu7T6tQAyBBKsBSZc=
+  app: fierce-shore-12577
+  on:
+    repo: thinkful-ei26/Michael-noteful-v3
