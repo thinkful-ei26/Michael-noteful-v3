@@ -5,6 +5,7 @@ const noteSchema = new mongoose.Schema({
   content: String,
   createdAt: Date,
   updatedAt: Date,
+  openedCount: Number
 });
 
 noteSchema.set('toJSON', {
