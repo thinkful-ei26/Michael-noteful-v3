@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const folderSchema = new mongoose.Schema({
-    title: {type: String, required: true, unique: true}
+    name: {type: String, required: true, unique: true}
 })
 
-fodlerSchema.set('toJSON', {
+folderSchema.set('toJSON', {
     virtuals: true,     // include built-in virtual `id`
     transform: (doc, ret) => {
       delete ret._id; // delete `_id`

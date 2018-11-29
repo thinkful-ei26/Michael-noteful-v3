@@ -6,11 +6,14 @@ const router = express.Router();
 const Note = require('../models/note');
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/', (req, res, next) => {
-  const {searchTerm} = req.query;
+  const {searchTerm, folderId} = req.query;
   
   let filter = {};
   if (searchTerm) {
-    filter.title = { $regex: searchTerm, $options: 'i' };
+   const re = RegExp(searchTerm, 'i');
+   filter.$or =[{'title': re}, {'content': re}]
+  }
+  if(folderId){
   }
    return Note.find(filter).sort({ updatedAt: 'desc' })
     .then(results => {
