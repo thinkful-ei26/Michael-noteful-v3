@@ -5,7 +5,9 @@ const noteSchema = new mongoose.Schema({
   content: String,
   createdAt: Date,
   updatedAt: Date,
-  openedCount: Number
+  openedCount: Number,
+  folderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }
+
 });
 
 noteSchema.set('toJSON', {
