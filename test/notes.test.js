@@ -59,6 +59,7 @@ describe('POST /api/notes', function () {
           expect(res.body.id).to.equal(data.id);
           expect(res.body.title).to.equal(data.title);
           expect(res.body.content).to.equal(data.content);
+          expect(res.body.folderId).to.equal(data.folderId.toString());
           expect(new Date(res.body.createdAt)).to.eql(data.createdAt);
           expect(new Date(res.body.updatedAt)).to.eql(data.updatedAt);
         });
@@ -86,6 +87,7 @@ describe('POST /api/notes', function () {
           expect(res.body.id).to.equal(data.id);
           expect(res.body.title).to.equal(data.title);
           expect(res.body.content).to.equal(data.content);
+          expect(res.body.folderId).to.equal(data.folderId.toString());
           expect(new Date(res.body.createdAt)).to.eql(data.createdAt);
           expect(new Date(res.body.updatedAt)).to.eql(data.updatedAt);
         });
@@ -141,6 +143,7 @@ describe('PUT /api/notes/:id', function () {
             console.log(data);
           expect(res.body.title).to.equal(data.title);
           expect(res.body.content).to.equal(data.content);
+          expect(res.body.folderId).to.equal(data.folderId.toString());
           expect(new Date(res.body.createdAt)).to.eql(data.createdAt);
           expect(new Date(res.body.updatedAt)).to.eql(data.updatedAt);
         });
