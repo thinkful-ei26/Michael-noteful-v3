@@ -1,5 +1,4 @@
 'use strict';
-const mongoose = require('mongoose');
 
 const express = require('express');
 
@@ -18,3 +17,6 @@ router.get('/', function (req,res,next) {
 
 
 })
+
+
+module.exports = router;
