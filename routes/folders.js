@@ -5,6 +5,7 @@ const express = require('express');
 
 const router = express.Router();
 const Folder = require('../models/folder');
+const Note = require('../models/note');
 
 
 router.get('/', function(req,res,next){
@@ -56,25 +57,11 @@ router.put('/:id', function (req,res,next) {
 
     return Folder.findByIdAndUpdate(id,bodyInfo,{new: true,upsert: true})
     .then(result => {
-        if(!result){
-
+        if(result){
+            res.status(200).json(result);
         }else{
-
+            res.status(400);
         }
-        console.log(result);
-        res.status(200).json(result);
-    })
-    .catch(err => {
-    next(err);
-  });
-}})
-
-router.delete('/:id', function (req, res, next) {
-   const id = req.params.id;
-   if(mongoose.Types.ObjectId.isValid(id)){
-    return Folder.findByIdAndRemove(id)
-    .then(result => {
-        res.sendStatus(204);
     })
     .catch(err => {
         if (err.code === 11000) {
@@ -82,7 +69,27 @@ router.delete('/:id', function (req, res, next) {
           err.status = 400;
         }
         next(err);
-      });
+      });   
+}})
+
+router.delete('/:id', function (req, res, next) {
+   const id = req.params.id;
+
+   const folderRemovePromise = Folder.findByIdAndRemove( id );
+
+   const noteRemovePromise = Note.updateMany(
+    { folderId: id },
+    { $unset: { folderId: '' } }
+  );
+
+   if(mongoose.Types.ObjectId.isValid(id)){
+    Promise.all([folderRemovePromise, noteRemovePromise])
+    .then(() => {
+      res.status(204).end();
+    })
+    .catch(err => {
+      next(err);
+    });
    }else{
        res.sendStatus(404);
    }
