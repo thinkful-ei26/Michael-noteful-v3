@@ -17,4 +17,4 @@ const tagsSchema = new mongoose.Schema({
   tagsSchema.set('timestamps', true);
   
   
-  module.exports = mongoose.model('Note', tagsSchema);
+  module.exports = mongoose.model('Tag', tagsSchema);
