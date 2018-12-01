@@ -52,20 +52,57 @@ router.get('/:id', (req, res, next) => {
 
 /* ========== POST/CREATE AN ITEM ========== */
 router.post('/', (req, res, next) => {
-  const {title,content,folderId, tags} = req.body;
-  if(!mongoose.Types.ObjectId.isValid(folderId)){
-    res.sendStatus(500);
+  const {title,content, tags} = req.body;
+  let {folderId} = req.body;
+  const updateObj = {
+    title,
+    content,
+    folderId,
+    tags
+  }
+  let boolTime = true;
+  //Check for vaild title
+  if(!title){
+    const err = new Error("Missing a title");
+    err.status = 400;
+    return next(err);
   }
   
-  return Note.create({title,content,folderId, tags})
-  .then(results => {
-    res.location(`${req.originalUrl}/${results.id}`).status(201).json(results);
-  })
-  .catch(err => {
-    res.sendStatus(500);
-    console.error(`ERROR: ${err.message}`);
-    console.error(err);
-  })
+  //Check the folder
+  console.log(folderId);
+  if(folderId === ""){  
+    updateObj.folderId = "000000000000000000000000";
+  }else{
+    if(!mongoose.Types.ObjectId.isValid(folderId)){
+      const err = new Error("Missing a folderId");
+      err.status = 400;
+      return next(err);
+    }
+  }
+
+  //Check the tags array
+  if(tags){
+    tags.map(tempTagId => {
+      if(!mongoose.Types.ObjectId.isValid(tempTagId)){
+        const err = new Error("bad tag");
+        err.status = 400;
+        boolTime = false;
+        return next(err);
+      }
+    })
+  }
+ 
+  if(boolTime){
+    return Note.create(updateObj)
+    .then(results => {
+        res.location(`${req.originalUrl}/${results.id}`).status(201).json(results);
+    })
+    .catch(err => {
+      res.sendStatus(500);
+      console.error(`ERROR: ${err.message}`);
+      console.error(err);
+    }) 
+  }
 });
 
 /* ========== PUT/UPDATE A SINGLE ITEM ========== */
@@ -75,27 +112,39 @@ router.put('/:id', (req, res, next) => {
   const bodyInfo = {
     title: req.body.title,
     content: req.body.content,
-    folderId: req.body.folderId
+    folderId: req.body.folderId,
+    tags: req.body.tags
   }
-  //Check the ID
-  if(!mongoose.Types.ObjectId.isValid(id)){
-    res.sendStatus(500);
+  let boolTime = true;
+  //Check for vaild title
+  if(!bodyInfo.title){
+    const err = new Error("Missing a title");
+    err.status = 400;
+    return next(err);
   }
+  
   //Check the folder
-  if(!mongoose.Types.ObjectId.isValid(req.body.folderId)){
-    res.sendStatus(500);
+  if(!mongoose.Types.ObjectId.isValid(bodyInfo.folderId)){
+    const err = new Error("Missing a folderId");
+    err.status = 400;
+    return next(err);
   }
 
   //Check the tags array
-  if(tags){
-    tags.map(tempTagId => {
+  if(bodyInfo.tags){
+    console.log("checking tags");
+    bodyInfo.tags.map(tempTagId => {
+      console.log(tempTagId);
       if(!mongoose.Types.ObjectId.isValid(tempTagId)){
-        res.sendStatus(500);
+        console.log('I found a bad tag!!!');
+        const err = new Error("bad tag");
+        err.status = 400;
+        boolTime = false;
+        return next(err);
       }
     })
-    res.sendStatus(500);
   }
-
+if(boolTime){
   return Note.findByIdAndUpdate(id,bodyInfo, {new: true,upsert: true})
   .then( results => {
     
@@ -106,7 +155,9 @@ router.put('/:id', (req, res, next) => {
     console.error(`ERROR: ${err.message}`);
     console.error(err);
   })
+}
 });
+
 
 /* ========== DELETE/REMOVE A SINGLE ITEM ========== */
 router.delete('/:id', (req, res, next) => {

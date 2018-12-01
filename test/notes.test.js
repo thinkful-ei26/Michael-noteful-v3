@@ -12,7 +12,7 @@ const { notes } = require('../db/seed/data');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-describe('overview describe', function (){
+describe('Running Tests on Notes Endpoints', function (){
     
     before(function () {
         return mongoose.connect(TEST_MONGODB_URI)
@@ -50,7 +50,7 @@ describe('POST /api/notes', function () {
           expect(res).to.have.header('location');
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
-          expect(res.body).to.have.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId');
+          expect(res.body).to.have.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId', 'tags');
           // 2) then call the database
           return Note.findById(res.body.id);
         })
@@ -81,7 +81,7 @@ describe('POST /api/notes', function () {
           expect(res).to.be.json;
 
           expect(res.body).to.be.an('object');
-          expect(res.body).to.have.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId');
+          expect(res.body).to.have.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId','tags');
 
           // 3) then compare database results to API response
           expect(res.body.id).to.equal(data.id);
@@ -129,18 +129,17 @@ describe('PUT /api/notes/:id', function () {
         .send(newItem)
         .then(function (_res) {
           res = _res;
-          console.log(res.body);
+    
           expect(res).to.have.status(200);
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
-          expect(res.body).to.have.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId');
+          expect(res.body).to.have.keys('id', 'title', 'content', 'createdAt', 'updatedAt', 'folderId','tags');
           // 2) then call the database
-          console.log(res.body.id);
+          
           return Note.findById(res.body.id);
         })
         // 3) then compare the API response to the database results
         .then(data => {
-            console.log(data);
           expect(res.body.title).to.equal(data.title);
           expect(res.body.content).to.equal(data.content);
           expect(res.body.folderId).to.equal(data.folderId.toString());

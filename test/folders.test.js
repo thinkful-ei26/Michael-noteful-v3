@@ -13,7 +13,7 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 
-describe('Running Tests on folder Endpoints', function () {
+describe('Running Tests on Folder Endpoints', function () {
     
     before(function () {
         return mongoose.connect(TEST_MONGODB_URI, { useNewUrlParser: true })
@@ -123,18 +123,18 @@ describe('Running Tests on folder Endpoints', function () {
         .send(newItem)
         .then(function (_res) {
             res = _res;
-            console.log(res.body);
+            
             expect(res).to.have.status(200);
             expect(res).to.be.json;
             expect(res.body).to.be.a('object');
             expect(res.body).to.have.keys('id', 'name', 'createdAt', 'updatedAt');
             // 2) then call the database
-            console.log(res.body.id);
+           
             return Folder.findById(res.body.id);
         })
         // 3) then compare the API response to the database results
         .then(data => {
-            console.log(data);
+           
             expect(res.body.name).to.equal(data.name);
             expect(new Date(res.body.createdAt)).to.eql(data.createdAt);
             expect(new Date(res.body.updatedAt)).to.eql(data.updatedAt);

@@ -44,11 +44,10 @@ router.post('/', function (req,res,next) {
     const newItem = {
         "name": req.body.name
     }
-    console.log(newItem)
     return Tag.create(newItem)
     .then(results => {
         if(results){
-            res.status(201).json(results);
+            res.location(`localhost:8080/api/tags/${results.id}`).status(201).json(results);
         }else{
             res.sendStatus(404);
         }
