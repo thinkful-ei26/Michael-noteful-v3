@@ -8,7 +8,7 @@ const Note = require('../models/note');
 
 router.get('/', function (req,res,next) {
 
-    return Tag.find({}).sort({name: 'desc'})
+    return Tag.find({}).sort({name: 'asc'})
     .then(results => {
         if(results){
             res.status(200).json(results);
@@ -21,18 +21,20 @@ router.get('/', function (req,res,next) {
 router.get('/:id', function (req,res,next) {
     const id = req.params.id;
     if(mongoose.Types.ObjectId.isValid(id)){
-
+        const err = new Error("Bad Id");
+        err.status = 400;
+        return next(err);
+    }
     return Tag.findById(id)
     .then(results => {
         if(results){
             res.status(200).json(results);
         }else{
-            res.sendStatus(404);
+            const err = new Error("Bad Id");
+            err.status = 400;
+            return next(err);
         }
     })
-    }else{
-        res.sendStatus(400);
-    }
 })
 
 router.post('/', function (req,res,next) {
@@ -49,13 +51,15 @@ router.post('/', function (req,res,next) {
         if(results){
             res.location(`localhost:8080/api/tags/${results.id}`).status(201).json(results);
         }else{
-            res.sendStatus(404);
+            const err = new Error("Unable to create note: Internal server Error");
+            err.status = 500;
+            return next(err);
         }
     })
     .catch(err => {
         if (err.code === 11000) {
           err = new Error('The Note name already exists');
-          err.status = 400;
+          err.status = 500;
         }
         next(err);
       });   
@@ -71,9 +75,11 @@ router.put('/:id', function (req,res,next) {
     return Tag.findByIdAndUpdate(id,newItem,{new: true,upsert: true})
     .then(results => {
         if(results){
-            res.status(200).json(results);
+            res.json(results);
         }else{
-            res.sendStatus(404);
+            const err = new Error("Unable to locate Resource");
+            err.status = 404;
+            return next(err);
         }
     })
     .catch(err => {

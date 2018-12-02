@@ -41,11 +41,12 @@ app.use((req, res, next) => {
 // Custom Error Handler
 app.use((err, req, res, next) => {
   if (err.status) {
+    console.log('hit errors');
     const errBody = Object.assign({}, err, { message: err.message });
-    res.status(err.status).json(errBody);
+    return res.status(err.status).json(errBody);
   } else {
     console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 

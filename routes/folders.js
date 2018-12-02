@@ -9,32 +9,56 @@ const Note = require('../models/note');
 
 
 router.get('/', function(req,res,next){
-    return Folder.find({}).sort({name: 'desc'})
+    return Folder.find({}).sort({name: 'asc'})
     .then(results => {
         res.json(results);
     })
     .catch(err => {
+        const err = new Error("Missing a title");
+        err.status = 400;
         next(err);
       });
 })
 
 router.get('/:id', function(req,res,next){
     const id = req.params.id;
-    if(mongoose.Types.ObjectId.isValid(id)){
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        const err = new Error("Bad Id");
+        err.status = 400;
+        return next(err);
+    }
+        
     return Folder.findById(id)
-    .then(result => {
-        res.status(200).json(result);
+        .then(result => {
+            if(result){
+                res.json(result);
+            }else{
+                const err = new Error("No results");
+                err.status = 400;
+                next(err);
+            }
+        
     })
     .catch(err => {
-        next(err);
+        const err = new Error("Error during request :id");
+        err.status = 400;
+        return next(err);
       });
-    }else{
-        res.sendStatus(404);
-    }
+    
 })
 
 router.post('/', function (req,res,next) {
     const {name} = req.body;
+    if(!name){
+        const err = new Error("Note requires a name");
+        err.status = 400;
+        return next(err);
+    }
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        const err = new Error("Bad Id");
+        err.status = 400;
+        return next(err);
+    }
     return Folder.create({name})
     .then(result => {
         res.location(`${req.url}`).status(201).json(result);
@@ -53,14 +77,19 @@ router.put('/:id', function (req,res,next) {
     const bodyInfo = {
         name: req.body.name,
     }
-    if(mongoose.Types.ObjectId.isValid(id)){
-
-    return Folder.findByIdAndUpdate(id,bodyInfo,{new: true,upsert: true})
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        const err = new Error("Bad Id");
+        err.status = 400;
+        return next(err);
+    }
+    return Folder.findByIdAndUpdate(id,bodyInfo,{new: true})
     .then(result => {
         if(result){
             res.status(200).json(result);
         }else{
-            res.status(400);
+            const err = new Error("No results");
+            err.status = 400;
+            return next(err);
         }
     })
     .catch(err => {
@@ -70,19 +99,22 @@ router.put('/:id', function (req,res,next) {
         }
         next(err);
       });   
-}})
+})
 
 router.delete('/:id', function (req, res, next) {
    const id = req.params.id;
 
+   if(!mongoose.Types.ObjectId.isValid(id)){
+    const err = new Error("Bad Id");
+    err.status = 400;
+    return next(err);
+}
    const folderRemovePromise = Folder.findByIdAndRemove( id );
 
    const noteRemovePromise = Note.updateMany(
     { folderId: id },
     { $unset: { folderId: '' } }
   );
-
-   if(mongoose.Types.ObjectId.isValid(id)){
     Promise.all([folderRemovePromise, noteRemovePromise])
     .then(() => {
       res.status(204).end();
@@ -90,9 +122,7 @@ router.delete('/:id', function (req, res, next) {
     .catch(err => {
       next(err);
     });
-   }else{
-       res.sendStatus(404);
-   }
+   
 })
 
 
