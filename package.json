@@ -1,0 +1,26 @@
+{
+	"name": "noteful-app",
+	"version": "0.0.1",
+	"license": "MIT",
+	"author": "Chris Klanac",
+	"repository": {
+		"type": "git"
+	},
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js",
+		"test": "cross-env NODE_ENV=test mocha --file test/server.js --timeout 10000"
+	},
+	"dependencies": {
+		"express": "^4.16.3",
+		"mongoose": "^5.3.14",
+		"morgan": "^1.9.0"
+	},
+	"devDependencies": {
+		"chai": "^4.2.0",
+		"chai-http": "^4.2.0",
+		"cross-env": "^5.2.0",
+		"mocha": "^5.2.0",
+		"nodemon": "^1.18.7"
+	}
+}
